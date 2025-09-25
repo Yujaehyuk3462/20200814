@@ -1,0 +1,70 @@
+package com.example.yujaehyuk_20200814
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.yujaehyuk_20200814.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        binding.switch1.setOnCheckedChangeListener { _, isChecked -> // 스위치
+            if(isChecked){
+                binding.textView2.visibility = android.view.View.VISIBLE
+
+                binding.radioGroup.visibility = android.view.View.VISIBLE
+
+                binding.imageView.visibility = android.view.View.VISIBLE
+
+                binding.buttonEnd.visibility = android.view.View.VISIBLE
+                binding.buttonReset.visibility = android.view.View.VISIBLE
+
+            }
+            else{
+                binding.textView2.visibility = android.view.View.INVISIBLE
+
+                binding.radioGroup.visibility = android.view.View.INVISIBLE
+
+                binding.imageView.visibility = android.view.View.INVISIBLE
+
+                binding.buttonEnd.visibility = android.view.View.INVISIBLE
+                binding.buttonReset.visibility = android.view.View.INVISIBLE
+            }
+        }
+
+        binding.radioGroup.setOnCheckedChangeListener { _, checkedId -> //라디오 그룹 라디오버튼 3개
+            when(checkedId){
+                R.id.radioButton1 -> binding.imageView.setImageResource(R.drawable.android14)
+                R.id.radioButton2 -> binding.imageView.setImageResource(R.drawable.android15)
+                R.id.radioButton3 -> binding.imageView.setImageResource(R.drawable.android16)
+                else -> binding.imageView.setImageDrawable(null)
+            }
+        }
+
+        binding.buttonEnd.setOnClickListener { //종료버튼
+            finishAffinity()
+        }
+
+        binding.buttonReset.setOnClickListener { //리셋버튼
+            val resetintent = intent
+            finish()
+            startActivity(resetintent)
+        }
+    }
+}
