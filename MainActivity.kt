@@ -1,70 +1,54 @@
-package com.example.yujaehyuk_20200814
+package com.example.finalproject
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.yujaehyuk_20200814.databinding.ActivityMainBinding
+import kotlin.jvm.java
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-
+    lateinit var btnResult: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+        setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        binding.switch1.setOnCheckedChangeListener { _, isChecked -> // 스위치
-            if(isChecked){
-                binding.textView2.visibility = android.view.View.VISIBLE
+        val voteCount = IntArray(9)
+        val image = arrayOfNulls<ImageView>(9)
+        val imageId = arrayOf(
+            R.id.iv1, R.id.iv2, R.id.iv3,
+            R.id.iv4, R.id.iv5, R.id.iv6,
+            R.id.iv7, R.id.iv8, R.id.iv9,
+        )
+        val imageName = arrayOf(
+            "독서하는 소녀", "꽃장식 모자 소녀","부채를 든 소녀",
+            "이레느깡 단 베르양", "잠자는 소녀","테라스의 두 자매",
+            "피아노 레슨", "피아노 앞의 소녀들","해변에서"
+        )
 
-                binding.radioGroup.visibility = android.view.View.VISIBLE
-
-                binding.imageView.visibility = android.view.View.VISIBLE
-
-                binding.buttonEnd.visibility = android.view.View.VISIBLE
-                binding.buttonReset.visibility = android.view.View.VISIBLE
-
-            }
-            else{
-                binding.textView2.visibility = android.view.View.INVISIBLE
-
-                binding.radioGroup.visibility = android.view.View.INVISIBLE
-
-                binding.imageView.visibility = android.view.View.INVISIBLE
-
-                binding.buttonEnd.visibility = android.view.View.INVISIBLE
-                binding.buttonReset.visibility = android.view.View.INVISIBLE
+        for(i in imageId.indices){
+            image[i] = findViewById(imageId[i]) //이미지 배열 instance화
+            image[i]!!.setOnClickListener {
+                voteCount[i]++
+                Toast.makeText(applicationContext, "${imageName[i]}: 총 ${voteCount[i]} 표", Toast.LENGTH_SHORT).show()
             }
         }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId -> //라디오 그룹 라디오버튼 3개
-            when(checkedId){
-                R.id.radioButton1 -> binding.imageView.setImageResource(R.drawable.android14)
-                R.id.radioButton2 -> binding.imageView.setImageResource(R.drawable.android15)
-                R.id.radioButton3 -> binding.imageView.setImageResource(R.drawable.android16)
-                else -> binding.imageView.setImageDrawable(null)
-            }
-        }
-
-        binding.buttonEnd.setOnClickListener { //종료버튼
-            finishAffinity()
-        }
-
-        binding.buttonReset.setOnClickListener { //리셋버튼
-            val resetintent = intent
-            finish()
-            startActivity(resetintent)
+        btnResult = findViewById(R.id.btnResult)
+        btnResult.setOnClickListener {
+            val intent = Intent(applicationContext, ResultActivity::class.java)
+            intent.putExtra("VoteCount", voteCount) //득표수 배열
+            intent.putExtra("ImageName", imageName) // 그림이름 배열
+            startActivity(intent)
         }
     }
 }
